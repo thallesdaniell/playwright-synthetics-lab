@@ -7,7 +7,7 @@ services:
       SYNTH_PASSWORD: ${SYNTH_PASSWORD:-synthetic-pass}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin-pass}
       JWT_SECRET: ${JWT_SECRET:-troque-este-segredo}
-      CHAOS_ENABLED: "true"   # só na PoC: permite simular falhas via POST /chaos
+      CHAOS_ENABLED: "true"   # somente no lab: permite simular falhas via POST /chaos
     ports:
       - "127.0.0.1:3000:3000"
 

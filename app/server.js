@@ -1,4 +1,4 @@
-// App de exemplo para a PoC de sintéticos. Sem dependências: só Node >= 18.
+// App de exemplo para o lab de sintéticos. Sem dependências: só Node >= 18.
 //
 // Endpoints:
 //   POST /auth/login     {username, password} -> {access_token, token_type, expires_in}

@@ -1,4 +1,4 @@
-# Limiares pensados para a PoC (jornada a cada 60s).
+# Limiares pensados para o lab (jornada a cada 60s).
 # Em produção com CronJob a cada 5 min, use for: 10m na falha
 # e 900 (15 min) no alerta de jornada parada.
 groups:
