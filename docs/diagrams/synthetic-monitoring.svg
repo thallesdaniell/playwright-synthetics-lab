@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="430" viewBox="0 0 1100 430" role="img" aria-labelledby="title desc">
+  <title id="title">Fluxo do laboratório de monitoramento sintético</title>
+  <desc id="desc">Playwright executa uma jornada HTTP contra uma API demo, envia métricas ao Pushgateway, que é coletado pelo Prometheus. Alertas são avaliados e o Grafana apresenta os resultados.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#64748b"/></marker>
+    <style>
+      text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;fill:#e2e8f0}.title{font-size:22px;font-weight:700}.label{font-size:15px;font-weight:650}.sub{font-size:12px;fill:#94a3b8}.edge{stroke:#64748b;stroke-width:2;fill:none;marker-end:url(#arrow)}.box{rx:14;stroke-width:1.5}
+    </style>
+  </defs>
+  <rect width="1100" height="430" rx="18" fill="#0b1220"/>
+  <text x="44" y="48" class="title">Jornada sintética → sinais operacionais</text>
+  <rect x="55" y="130" width="205" height="105" class="box" fill="#172554" stroke="#3b82f6"/>
+  <text x="78" y="167" class="label">Playwright</text><text x="78" y="192" class="sub">Login · perfil · autorização</text><text x="78" y="213" class="sub">Cron local ou Kubernetes</text>
+  <rect x="55" y="285" width="205" height="82" class="box" fill="#1e293b" stroke="#475569"/>
+  <text x="78" y="320" class="label">API de demonstração</text><text x="78" y="344" class="sub">Endpoints HTTP + modo de falha</text>
+  <rect x="355" y="285" width="205" height="82" class="box" fill="#3b0764" stroke="#a855f7"/>
+  <text x="378" y="320" class="label">Pushgateway</text><text x="378" y="344" class="sub">Resultados do job</text>
+  <rect x="650" y="130" width="190" height="105" class="box" fill="#422006" stroke="#f59e0b"/>
+  <text x="674" y="167" class="label">Prometheus</text><text x="674" y="192" class="sub">Scrape + regras de alerta</text><text x="674" y="213" class="sub">Falha e monitor parado</text>
+  <rect x="900" y="130" width="155" height="105" class="box" fill="#052e2b" stroke="#14b8a6"/>
+  <text x="923" y="167" class="label">Grafana</text><text x="923" y="192" class="sub">Dashboard</text><text x="923" y="213" class="sub">Visão por etapa</text>
+  <path d="M157 235V278" class="edge"/><text x="173" y="265" class="sub">HTTP</text>
+  <path d="M260 183C310 183 300 326 347 326" class="edge"/><text x="278" y="248" class="sub">métricas</text>
+  <path d="M560 326C610 326 600 183 642 183" class="edge"/><text x="572" y="258" class="sub">scrape</text>
+  <path d="M840 183H892" class="edge"/>
+  <text x="55" y="400" class="sub">A conta sintética testa acesso mínimo e nunca deve usar credenciais pessoais ou administrativas.</text>
+</svg>

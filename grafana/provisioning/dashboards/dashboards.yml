@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: synthetics
+    folder: Synthetics
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards

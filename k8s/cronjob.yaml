@@ -1,0 +1,38 @@
+# Caminho de produção: o mesmo container dos sintéticos, rodando via CronJob.
+# Crie o secret fora do Git, por exemplo:
+#   kubectl -n monitoring create secret generic synthetic-credentials \
+#     --from-literal=username=synthetic-bot --from-literal=password='...'
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: synthetic-login-api
+  namespace: monitoring
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid        # não empilha execuções se uma travar
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0              # o retry fica a cargo do Playwright
+      activeDeadlineSeconds: 120
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: synthetics
+              image: registry.exemplo.com/synthetics:1.0.0
+              env:
+                - name: BASE_URL
+                  value: https://api.exemplo.com
+                - name: PUSHGATEWAY_URL
+                  value: http://prometheus-pushgateway.monitoring:9091
+                - name: SYNTH_USER
+                  valueFrom:
+                    secretKeyRef: { name: synthetic-credentials, key: username }
+                - name: SYNTH_PASSWORD
+                  valueFrom:
+                    secretKeyRef: { name: synthetic-credentials, key: password }
+              resources:
+                requests: { cpu: 100m, memory: 256Mi }
+                limits: { memory: 1Gi }

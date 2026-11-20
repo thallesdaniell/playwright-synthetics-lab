@@ -1,0 +1,31 @@
+# Limiares pensados para a PoC (jornada a cada 60s).
+# Em produção com CronJob a cada 5 min, use for: 10m na falha
+# e 900 (15 min) no alerta de jornada parada.
+groups:
+  - name: synthetics
+    rules:
+      - alert: SyntheticJourneyFailing
+        expr: synthetic_check_success == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Jornada {{ $labels.journey }} falhando"
+          description: "Veja synthetic_step_success para saber qual passo quebrou."
+
+      - alert: SyntheticJourneyStale
+        expr: time() - synthetic_check_last_run_timestamp_seconds > 300
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Jornada {{ $labels.journey }} sem rodar há mais de 5 min"
+          description: "O runner pode estar parado ou sem conseguir falar com o Pushgateway."
+
+      - alert: SyntheticJourneySlow
+        expr: synthetic_check_duration_seconds > 2
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Jornada {{ $labels.journey }} lenta ({{ $value | humanizeDuration }})"

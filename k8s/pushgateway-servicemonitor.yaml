@@ -1,0 +1,20 @@
+# Se usar Prometheus Operator / kube-prometheus-stack.
+# honorLabels: true é o equivalente ao honor_labels do prometheus.yml.
+# (Se instalou o chart prometheus-community/prometheus-pushgateway,
+#  prefira serviceMonitor.enabled=true nele e confira honorLabels no
+#  ServiceMonitor gerado.)
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-pushgateway
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack   # ajuste para o seletor do seu Prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-pushgateway
+  endpoints:
+    - port: http
+      interval: 15s
+      honorLabels: true

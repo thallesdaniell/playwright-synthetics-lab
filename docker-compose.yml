@@ -1,0 +1,57 @@
+services:
+  # App de exemplo com /auth/login, /me e /admin/users
+  app:
+    build: ./app
+    environment:
+      SYNTH_USER: ${SYNTH_USER:-synthetic-bot}
+      SYNTH_PASSWORD: ${SYNTH_PASSWORD:-synthetic-pass}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin-pass}
+      JWT_SECRET: ${JWT_SECRET:-troque-este-segredo}
+      CHAOS_ENABLED: "true"   # só na PoC: permite simular falhas via POST /chaos
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  # Runner dos sintéticos (faz o papel do CronJob)
+  synthetics:
+    build: ./synthetics
+    command: ["sh", "/app/run-loop.sh"]
+    environment:
+      BASE_URL: http://app:3000
+      PUSHGATEWAY_URL: http://pushgateway:9091
+      SYNTH_USER: ${SYNTH_USER:-synthetic-bot}
+      SYNTH_PASSWORD: ${SYNTH_PASSWORD:-synthetic-pass}
+      INTERVAL_SECONDS: "60"
+    depends_on:
+      app:
+        condition: service_healthy
+      pushgateway:
+        condition: service_started
+
+  pushgateway:
+    image: prom/pushgateway:v1.11.1
+    ports:
+      - "127.0.0.1:9091:9091"
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules:/etc/prometheus/rules:ro
+    ports:
+      - "127.0.0.1:9090:9090"
+    depends_on:
+      - pushgateway
+
+  grafana:
+    image: grafana/grafana:12.1.0
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/synthetics.json
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "127.0.0.1:3001:3000"
+    depends_on:
+      - prometheus
