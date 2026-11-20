@@ -43,6 +43,23 @@ O runner executa a cada 60 segundos. Endpoints locais:
 
 As credenciais do `.env.example` são descartáveis e existem apenas para o demo local. O arquivo `.env` é ignorado pelo Git. A aplicação de exemplo também expõe `/chaos` para provocar falhas e latência; não habilite esse endpoint em uma API real.
 
+## Validação local e resultado esperado
+
+Em 19 de novembro de 2026, a stack foi construída e executada com Docker Compose. A jornada `login-api` passou, as três etapas enviaram resultado `1` ao Pushgateway, o Prometheus retornou `synthetic_check_success{journey="login-api"} 1` e a API de saúde do Grafana respondeu com `database: ok`.
+
+Para conferir no seu ambiente após subir a stack:
+
+```sh
+docker compose ps
+docker compose logs --tail 30 synthetics
+curl -fsS 'http://localhost:9090/api/v1/query?query=synthetic_check_success'
+curl -fsS http://localhost:3001/api/health
+```
+
+São esperados os serviços ativos, `1 passed` no log do runner, valor `1` na resposta do Prometheus e `database: ok` no Grafana. A primeira coleta pode levar alguns segundos. Acesse o dashboard provisionado no Grafana para explorar as métricas por etapa.
+
+Os cenários de falha, alertas e manifesto Kubernetes são exemplos para exploração; não foram validados nessa execução. Para encerrar a stack local, use `docker compose down`.
+
 ## Jornada `login-api`
 
 | Etapa | Verificação |
